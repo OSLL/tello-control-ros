@@ -87,8 +87,31 @@ class GamepadState:
         self.RY = msg.axes[3]
         self.RT = msg.axes[13]
 
+    def parse_f710(self, msg):
+        if len(msg.buttons) != 12 or len(msg.axes) != 6:
+            raise ValueError('Invalid number of buttons (%d) or axes (%d)' % (
+                len(msg.buttons), len(msg.axes)))
+        self.Sq = msg.buttons[0]  # X
+        self.Cr = msg.buttons[1]  # A
+        self.Ci = msg.buttons[2]  # B
+        self.Tr = msg.buttons[3]  # Y
+        self.L1 = msg.buttons[4]
+        self.R1 = msg.buttons[5]
+        self.L2 = msg.buttons[6]
+        self.R2 = msg.buttons[7]
+        self.Select = msg.buttons[8] # back button
+        self.Start = msg.buttons[9]
+        self.LX = msg.axes[0]
+        self.LY = msg.axes[1]
+        self.RX = msg.axes[2]
+        self.RY = msg.axes[3]
+
     def parse(self, msg):
         err = None
+        try:
+            return self.parse_f710(msg)
+        except ValueError as e:
+            err = e
         try:
             return self.parse_ps3_usb(msg)
         except ValueError as e:
